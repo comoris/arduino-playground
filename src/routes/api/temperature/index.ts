@@ -1,11 +1,6 @@
 import type { RequestHandler } from '@sveltejs/kit';
+import type { TemperatureValue } from '$lib/types';
 import clientPromise from '$lib/db/mongo';
-
-export type Typify<T> = { [K in keyof T]: Typify<T[K]> };
-export interface TemperatureValue {
-    temperature: number;
-    timeStamp: number;
-}
 
 // save temperature
 export const post: RequestHandler = async ({ request }) => {
