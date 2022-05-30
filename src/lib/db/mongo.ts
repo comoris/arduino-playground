@@ -1,11 +1,10 @@
 
 import dotenv from 'dotenv';
 dotenv.config();
-console.log('process.env.VITE_MONGODB_URI', process.env['VITE_MONGODB_URI']);
 
 import { MongoClient } from 'mongodb';
-// const uri = import.meta.env.VITE_MONGODB_URI;
-const uri = process.env['VITE_MONGODB_URI'];
+// const viteUri = import.meta.env.VITE_MONGODB_URI;
+const uri = import.meta.env.DEV ? import.meta.env.VITE_MONGODB_URI : process.env['VITE_MONGODB_URI'];
 
 let client
 let clientPromise:  Promise<MongoClient>;
