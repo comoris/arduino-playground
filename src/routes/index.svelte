@@ -20,8 +20,8 @@
 
 <ul>
 	{#if sensors.length}
-		{#each sensors as sensor}
-			<li>{JSON.stringify(sensor.data)}</li>
+		{#each Object.entries(sensors) as [value, timeStamp]}
+			<li>{value} | {timeStamp}</li>
 		{/each}
 	{/if}
 </ul>

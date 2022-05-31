@@ -1,15 +1,16 @@
 import clientPromise from '$lib/db/mongo';
 import type { Sensor, SensorData } from '$lib/types';
 import type { RequestHandler } from '@sveltejs/kit';
+import { ObjectId } from 'mongodb';
 
 export const get: RequestHandler<Record<string, string>, SensorData[] | { error: string }> = async ({ params }) => {
 	const dbConnection = await clientPromise;
 	const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
-
-	const sensor = await sensorCollection.findOne<Sensor>({ id: params.id });
+	console.log('params', params.id);
+	const sensor = await sensorCollection.findOne<Sensor>({ _id: new ObjectId(params.id) });
 
 	if (!sensor) {
-		return { status: 404, body: { error: 'No sensors found' } };
+		return { status: 404, body: { error: `No sensor with id ${params.id} found` } };
 	}
 
 	return {
@@ -23,7 +24,7 @@ export const post: RequestHandler<Record<string, string>, Sensor | { error: stri
 	const dbConnection = await clientPromise;
 	const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
 
-	const sensor = await sensorCollection.findOne<Sensor>({ id: params.id });
+	const sensor = await sensorCollection.findOne<Sensor>({ _id: new ObjectId(params.id) });
 
 	if (!sensor) {
 		return { status: 404, body: { error: 'No sensors found' } };
@@ -34,7 +35,7 @@ export const post: RequestHandler<Record<string, string>, Sensor | { error: stri
 		data: [...(sensor?.data ?? []), sensorInputReq]
 	};
 
-	await sensorCollection.replaceOne({ id: params.id }, updatedSensor);
+	await sensorCollection.replaceOne({ _id: new ObjectId(params.id) }, updatedSensor);
 
 	return { status: 200, body: updatedSensor };
 };
