@@ -19,7 +19,9 @@
 </script>
 
 <ul>
-	{#each sensors as sensor}
-		<li>{JSON.stringify(sensor.data)}</li>
-	{/each}
+	{#if sensors.length}
+		{#each sensors as sensor}
+			<li>{JSON.stringify(sensor.data)}</li>
+		{/each}
+	{/if}
 </ul>
