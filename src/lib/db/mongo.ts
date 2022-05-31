@@ -1,4 +1,4 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const uri = process.env['MONGODB_URI'];
 
@@ -28,3 +28,8 @@ if (process.env['NODE_ENV'] === 'development') {
 // By doing this in a separate module,
 // the client can be shared across functions.
 export default clientPromise;
+
+export function mapMongoDbId<T>(doc: T & { _id: ObjectId }): T {
+	const { _id, ...rest } = doc;
+	return { id: _id.toString(), ...rest } as unknown as T;
+}

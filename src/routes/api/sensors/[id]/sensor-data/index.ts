@@ -1,4 +1,4 @@
-import clientPromise from '$lib/db/mongo';
+import clientPromise, { mapMongoDbId } from '$lib/db/mongo';
 import type { Sensor, SensorData } from '$lib/types';
 import type { RequestHandler } from '@sveltejs/kit';
 import { ObjectId } from 'mongodb';
@@ -24,15 +24,15 @@ export const post: RequestHandler<Record<string, string>, Sensor | { error: stri
 	const dbConnection = await clientPromise;
 	const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
 
-	const sensor = await sensorCollection.findOne<Sensor>({ _id: new ObjectId(params.id) });
+	const sensor = await sensorCollection.findOne({ _id: new ObjectId(params.id) });
 
 	if (!sensor) {
 		return { status: 404, body: { error: 'No sensors found' } };
 	}
 
 	const updatedSensor: Sensor = {
-		...sensor,
-		data: [...(sensor?.data ?? []), sensorInputReq]
+		...mapMongoDbId<Sensor>(sensor),
+		data: [...(sensor.data ?? []), sensorInputReq]
 	};
 
 	await sensorCollection.replaceOne({ _id: new ObjectId(params.id) }, updatedSensor);

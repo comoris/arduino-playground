@@ -20,8 +20,8 @@
 
 <ul>
 	{#if sensors.length}
-		{#each sensors as { _id, name, type, data }}
-			<li>{_id} | {name} | {type} | {data}</li>
+		{#each sensors as { id, name, type, data }}
+			<li>{id} | {name} | {type} | {data}</li>
 		{/each}
 	{/if}
 </ul>
