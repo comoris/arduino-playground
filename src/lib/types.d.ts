@@ -4,7 +4,7 @@ export enum SensorType {
 	TEMPERATURE = 'TEMPERATURE'
 }
 export interface Sensor {
-	id: string;
+	_id: string;
 	name: string;
 	type: SensorType.TEMPERATURE;
 	data: SensorData[];

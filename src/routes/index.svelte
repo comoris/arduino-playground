@@ -20,8 +20,8 @@
 
 <ul>
 	{#if sensors.length}
-		{#each Object.entries(sensors) as [value, timeStamp]}
-			<li>{value} | {timeStamp}</li>
+		{#each sensors as { _id, name, type, data }}
+			<li>{_id} | {name} | {type} | {data}</li>
 		{/each}
 	{/if}
 </ul>
