@@ -1,26 +1,25 @@
 <script context="module" lang="ts">
-	import type { sensorData } from '$lib/types';
 	import type { Load } from '@sveltejs/kit';
 
-	let temperatures: SensorData[];
-
 	export const load: Load = async ({ fetch }) => {
-		const response = await fetch('/api/sensors/temperature/');
-		const temperatureValues = await response.json();
+		const response = await fetch('/api/sensors');
+		const sensors = await response.json();
 
 		return {
 			status: response.status,
-			props: { temperatureValues }
+			props: { sensors }
 		};
 	};
 </script>
 
 <script lang="ts">
-	export let temperatureValues: SensorData[];
+	import type { Sensor } from '$lib/types';
+
+	export let sensors: Sensor[];
 </script>
 
 <ul>
-	{#each temperatureValues as temp}
-		<li>{temp.value}</li>
+	{#each sensors as sensor}
+		<li>{JSON.stringify(sensor.data)}</li>
 	{/each}
 </ul>

@@ -1,33 +1,16 @@
-import type { RequestHandler } from '@sveltejs/kit';
-import type { Sensor, SensorData } from '$lib/types';
 import clientPromise from '$lib/db/mongo';
+import type { Sensor } from '$lib/types';
+import type { RequestHandler } from '@sveltejs/kit';
 
+export const del: RequestHandler<Record<string, string>, Sensor | { error: string }> = async ({ params }) => {
+	const dbConnection = await clientPromise;
+	const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
 
-// save temperature
-export const post: RequestHandler<Record<string, string>, SensorData> = async ({ params, request }) => {
+	const deletedSensor = await (await sensorCollection.findOneAndDelete({ id: params.id })).value;
 
-    const requestVal = await request.json() as SensorData;
-    const dbConnection = await clientPromise;
-    
-    const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
+	if (!deletedSensor) {
+		return { status: 404, body: { error: 'No sensors found' } };
+	}
 
-    if(!sensorCollection) {
-      dbConnection.db('iot').createCollection('sensors');
-    }
-
-    const tempSensorDocA = await sensorCollection.findOne<Sensor>({ id: params.id }, { projection: { _id: 0 } });
-
-    if (!tempSensorDocA) {
-      await sensorCollection.insertOne({id: params.id, type: 'temperature', data: [requestVal]});
-      return { status: 200, body: requestVal };
-    }
-
-    const upDatedTempSensorA: Sensor = {
-      id: params.id, 
-      type: tempSensorDocA.type,
-      data: [...(tempSensorDocA?.data ?? []), requestVal]};
-
-    await sensorCollection.replaceOne({ id: 'tempSensorA' }, upDatedTempSensorA);
-
-    return { status: 200, body: requestVal };
-}
+	return { status: 200, body: deletedSensor };
+};

@@ -1,22 +1,40 @@
-import clientPromise from "$lib/db/mongo";
-import type { Sensor, SensorData } from "$lib/types";
-import type { RequestHandler } from "@sveltejs/kit";
+import clientPromise from '$lib/db/mongo';
+import type { Sensor, SensorData } from '$lib/types';
+import type { RequestHandler } from '@sveltejs/kit';
 
-// list temperatures
-export const get: RequestHandler<Record<string, string>, SensorData[]> = async ({params}) => {
-    console.log('params', params.id);
-    
-    const dbConnection = await clientPromise;
-    const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
+export const get: RequestHandler<Record<string, string>, SensorData[] | { error: string }> = async ({ params }) => {
+	const dbConnection = await clientPromise;
+	const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
 
-    const temperatures = await sensorCollection.findOne<Sensor>({ id: params.id }, { projection: { _id: 0 } });
-  
-    if (!temperatures) {
-      return { status: 404 };
-    }
+	const sensor = await sensorCollection.findOne<Sensor>({ id: params.id });
 
-    return {
-      status: 200,
-      body: temperatures.data,
-    };
-  };
+	if (!sensor) {
+		return { status: 404, body: { error: 'No sensors found' } };
+	}
+
+	return {
+		status: 200,
+		body: sensor.data
+	};
+};
+
+export const post: RequestHandler<Record<string, string>, Sensor | { error: string }> = async ({ params, request }) => {
+	const sensorInputReq: SensorData = await request.json();
+	const dbConnection = await clientPromise;
+	const sensorCollection = dbConnection.db('iot').collection<Sensor>('sensors');
+
+	const sensor = await sensorCollection.findOne<Sensor>({ id: params.id });
+
+	if (!sensor) {
+		return { status: 404, body: { error: 'No sensors found' } };
+	}
+
+	const updatedSensor: Sensor = {
+		...sensor,
+		data: [...(sensor?.data ?? []), sensorInputReq]
+	};
+
+	await sensorCollection.replaceOne({ id: params.id }, updatedSensor);
+
+	return { status: 200, body: updatedSensor };
+};

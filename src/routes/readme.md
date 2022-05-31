@@ -4,10 +4,14 @@
 
 POST: api/sensors/[id]
 
-e.g. api/sensors/outsideTemperature
+e.g. api/sensors/742942jkl4j2l
 
-``` {type: 'TEMPERATURE' } ```
+`{type: 'TEMPERATURE' }`
 
+## Delete Sensor
+
+DELETE:  api/sensors/[id]
+e.g. api/sensors/742942jkl4j2l
 
 ## Send sensorData
 
@@ -15,4 +19,4 @@ POST: api/sensors/[id]/sensorData
 
 e.g. api/sensors/outsideTemperature/sensorData
 
-``` {value: '66', timestamp: '1234564565' } ```
+`{value: '66', timestamp: '1234564565' }`

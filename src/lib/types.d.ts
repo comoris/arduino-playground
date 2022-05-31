@@ -1,16 +1,21 @@
 export type Typify<T> = { [K in keyof T]: Typify<T[K]> };
 
+export enum SensorType {
+	TEMPERATURE = 'TEMPERATURE'
+}
 export interface Sensor {
-    id: string,
-    type: "temperature",
-    data: SensorData[]
+	id: string;
+	name: string;
+	type: SensorType.TEMPERATURE;
+	data: SensorData[];
 }
 
 export interface SensorData {
-    value: number;
-    timeStamp: number;
+	value: number;
+	timeStamp: number;
 }
 
 export interface SensorInput {
-    type: "temperature",
+	type: SensorType.TEMPERATURE;
+	name: string;
 }

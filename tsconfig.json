@@ -10,7 +10,5 @@
 		"sourceMap": true,
 		"strict": true
 	},
-	"files": [
-		"src/types/global.d.ts"
-	]
+	"files": ["src/types/global.d.ts"]
 }
