@@ -21,7 +21,14 @@
 <ul>
 	{#if sensors.length}
 		{#each sensors as { id, name, type, data }}
-			<li>{id} | {name} | {type} | {data}</li>
+			<li>
+				{id} | {name} | {type} |
+				{#if data.length}
+					{#each data as { value, timeStamp }}
+						{value} | {timeStamp}
+					{/each}
+				{/if}
+			</li>
 		{/each}
 	{/if}
 </ul>
