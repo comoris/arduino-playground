@@ -24,9 +24,11 @@
 			<li>
 				{id} | {name} | {type} |
 				{#if data.length}
-					{#each data as { value, timeStamp }}
-						{value} | {timeStamp}
-					{/each}
+					<ul>
+						{#each data as { value, timeStamp }}
+							<li>{value} | {timeStamp}</li>
+						{/each}
+					</ul>
 				{/if}
 			</li>
 		{/each}
